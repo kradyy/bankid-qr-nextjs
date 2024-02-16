@@ -25,16 +25,16 @@ const QR_CODE = {
                 }),
             };
 
+            console.log(params);
+
             const response = await axios.get(
                 "/api/bankid",
                 { params }
             );
 
-            const { qr: qrData } = await response.data;
+            const data = await response.data;
 
-            console.log('logs');
-
-            setQRDataString(qrData);
+            setQRDataString(data);
         } catch (error: any) {
             console.error("Error fetching QR code data:", error.message);
         }
@@ -61,7 +61,6 @@ const QR_CODE = {
 const useBankIdQrCode = () => {
     const [triggerCounter, setTriggerCounter] = useState(0);
     const [auth, setAuthData] = useState<any>(null);
-    const [collection, setCollection] = useState<any>(null);
     const [hasTimedOut, setHasTimedOut] = useState(false);
     const [completed, setCompleted] = useState(false);
     const [qrCodeImage, setQRCodeImage] = useState<string>("");
@@ -121,13 +120,12 @@ const useBankIdQrCode = () => {
 
                 try {
                     const response = await axios.get(
-                        process.env.NEXT_PUBLIC_SITE_URL + "/api/bankid",
+                        "/api/bankid",
                         {
                             params: params,
                         }
                     );
                     const data = await response.data;
-                    setCollection(data);
 
                     if (data?.status === "complete") {
                         setIndentification(data);
@@ -135,7 +133,7 @@ const useBankIdQrCode = () => {
                         clearInterval(i);
                     }
 
-                    if (hasTimedOut === true) {
+                    if (hasTimedOut === true || data?.status === 'failed') {
                         clearInterval(i);
                     }
 

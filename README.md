@@ -37,6 +37,7 @@ Below is an example of how to use the custom hook in a Next.js component to disp
 ```jsx
 import React, { useEffect } from "react";
 import useBankIdQrCode from "@/hooks/useBankIdQrCode";
+import BeatLoader from "react-spinners/BeatLoader";
 
 const BankIDClient = () => {
   const { qrCodeImage, identification, hasTimedOut, retriggerAuth } =
@@ -48,7 +49,7 @@ const BankIDClient = () => {
 
   // Success
   if (identification) {
-    consle.log("identified as", identification);
+    consle.log("identified as", identification?.completionData);
   }
 
   return (
@@ -59,7 +60,11 @@ const BankIDClient = () => {
           <span>BankID timed out</span>
         </>
       ) : (
-        <img src={qrCodeImage} alt="QR Code" />
+          {!qrCodeImage ? (
+            <BeatLoader color="#183e4f" />
+          ) : (
+            <img src={qrCodeImage} alt="QR Code" />
+          )}
       )}
     </div>
   );

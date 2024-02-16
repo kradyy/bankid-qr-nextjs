@@ -90,7 +90,7 @@ export async function GET(request: NextRequest) {
             const ip = headers().get('x-forwarded-for')
 
             const data = await call("auth", {
-                ip,
+                endUserIp: ip,
             })
 
             result = {
