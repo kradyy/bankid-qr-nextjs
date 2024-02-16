@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import https from "https";
 import to from "await-to-js";
-import { config } from "@/app/api/bankid/config";
+import { config } from "./config";
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from 'next/headers'
 import crypto from 'crypto'
