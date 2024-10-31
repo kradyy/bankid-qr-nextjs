@@ -70,3 +70,5 @@ const BankIDClient = () => {
 
 export default BankIDClient;
 ```
+
+Theres also a demo component provided in the repository to illustrate how to use the custom hook in a where you can test the BankID authentication flow. Check out AuthenticationWrapper in `examples/AuthenticationWrapper/index.tsx`.
