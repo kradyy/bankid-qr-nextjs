@@ -3,28 +3,55 @@ import { useContext, useEffect, useState } from "react";
 import BeatLoader from "react-spinners/BeatLoader";
 import Image from "next/image";
 import { BankIdContext } from "../BankIdContext";
+import FadeLoader from "react-spinners/FadeLoader";
 import MethodFooter from "../MethodFooter";
 
-const QRCodeView = () => {
+const AuthenticationView = () => {
   const { state, dispatch } = useContext(BankIdContext);
-  const { qrCodeImage, identification, hasTimedOut, hasError, retriggerAuth } =
-    state;
+
+  const {
+    qrCodeImage,
+    identification,
+    hasTimedOut,
+    autoStartToken,
+    hasError,
+    retriggerAuth,
+    authenticationMethod,
+  } = state;
+
+  const [componentMethod, setComponentMethod] = useState(authenticationMethod);
 
   const openQRCode = () => {
-    dispatch({ type: "SET_VIEW", payload: "qrcode" });
-    retriggerAuth();
+    setComponentMethod("qr");
+    //retriggerAuth();
   };
 
   const openAutoStart = () => {
-    dispatch({ type: "SET_VIEW", payload: "qrcode" });
-    retriggerAuth();
+    console.log("autostart");
+    setComponentMethod("auto");
+    //retriggerAuth();
   };
+
+  useEffect((): void => {
+    if (!autoStartToken || componentMethod !== "auto") {
+      return;
+    }
+
+    const url = `bankid:///?autostarttoken=${autoStartToken}&redirect=null`;
+
+    window.open(url, "_self");
+  }, [autoStartToken, componentMethod]);
 
   const statusTitle = hasTimedOut
     ? "BankID verifikation tog för lång tid"
     : hasError
     ? "Kunde inte verifiera BankID"
     : "";
+
+  const cancelAction = () =>
+    dispatch({ type: "SET_AUTHENTICATION_METHOD", payload: "" });
+
+  console.log("qrCodeImage", qrCodeImage);
 
   return (
     <div className="p-5 w-full">
@@ -66,11 +93,18 @@ const QRCodeView = () => {
         </Alert>
       ) : (
         <div>
-          {!qrCodeImage ? (
+          {componentMethod === "auto" && !hasTimedOut && (
+            <div className="flex flex-col justify-center items-center space-y-4 my-8">
+              <FadeLoader color="#183e4f" />
+              <span className="fs-16">Startar BankID appen ..</span>
+            </div>
+          )}
+
+          {componentMethod === "qr" && !qrCodeImage ? (
             <div className="flex justify-center">
               <BeatLoader color="#183e4f" />
             </div>
-          ) : (
+          ) : componentMethod === "qr" ? (
             <div className="bg-aliceblue px-6 py-8 relative text-center rounded-lg">
               <div className="flex justify-center items-center relative">
                 <svg
@@ -80,7 +114,7 @@ const QRCodeView = () => {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                   className="absolute left-0 cursor-pointer transition-all duration-200 hover:-translate-x-[2px]"
-                  onClick={() => dispatch({ type: "SET_VIEW", payload: "" })}
+                  onClick={cancelAction}
                 >
                   <path
                     d="M4.325 9L9.925 14.6L8.5 16L0.5 8L8.5 0L9.925 1.4L4.325 7H16.5V9H4.325Z"
@@ -114,13 +148,16 @@ const QRCodeView = () => {
                 Öppna BankId på den här enheten istället
               </span>
             </div>
-          )}
+          ) : null}
         </div>
       )}
 
-      <MethodFooter reTriggerView="authentication" />
+      <MethodFooter
+        reTriggerView={authenticationMethod}
+        cancelAction={cancelAction}
+      />
     </div>
   );
 };
 
-export default QRCodeView;
+export default AuthenticationView;
