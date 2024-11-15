@@ -1,6 +1,6 @@
 import Button from "@/components/elements/Button";
 import { useContext } from "react";
-import { BankIdContext } from "@/components/BankId/BankIdContext";
+import { BankIdContext } from "@/components/bankId/BankIdContext";
 
 interface MethodFooterProps {
   reTriggerView: string;

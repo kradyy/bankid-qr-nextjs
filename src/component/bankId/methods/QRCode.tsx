@@ -2,16 +2,21 @@ import Alert from "@/components/elements/Alert";
 import { useContext, useEffect, useState } from "react";
 import BeatLoader from "react-spinners/BeatLoader";
 import Image from "next/image";
-import { BankIdContext } from "./BankIdContext";
-import MethodFooter from "./MethodFooter";
+import { BankIdContext } from "../BankIdContext";
+import MethodFooter from "../MethodFooter";
 
-const AuthenticationView = () => {
+const QRCodeView = () => {
   const { state, dispatch } = useContext(BankIdContext);
   const { qrCodeImage, identification, hasTimedOut, hasError, retriggerAuth } =
     state;
 
-  const openIdentification = () => {
-    dispatch({ type: "SET_VIEW", payload: "identification" });
+  const openQRCode = () => {
+    dispatch({ type: "SET_VIEW", payload: "qrcode" });
+    retriggerAuth();
+  };
+
+  const openAutoStart = () => {
+    dispatch({ type: "SET_VIEW", payload: "qrcode" });
     retriggerAuth();
   };
 
@@ -20,9 +25,6 @@ const AuthenticationView = () => {
     : hasError
     ? "Kunde inte verifiera BankID"
     : "";
-
-  console.log("hasError 2", hasError);
-  console.log("identification", identification);
 
   return (
     <div className="p-5 w-full">
@@ -69,7 +71,7 @@ const AuthenticationView = () => {
               <BeatLoader color="#183e4f" />
             </div>
           ) : (
-            <div className="bg-aliceblue px-6 py-8 my-6 relative text-center rounded-lg">
+            <div className="bg-aliceblue px-6 py-8 relative text-center rounded-lg">
               <div className="flex justify-center items-center relative">
                 <svg
                   width="17"
@@ -86,10 +88,7 @@ const AuthenticationView = () => {
                   />
                 </svg>
 
-                <h2
-                  className="text-center font-semibold"
-                  onClick={openIdentification}
-                >
+                <h2 className="text-center font-semibold" onClick={openQRCode}>
                   Starta BankID-appen
                 </h2>
               </div>
@@ -109,7 +108,7 @@ const AuthenticationView = () => {
 
               <span
                 className="text-blue font-semibold cursor-pointer"
-                onClick={openIdentification}
+                onClick={openAutoStart}
                 role="button"
               >
                 Öppna BankId på den här enheten istället
@@ -124,4 +123,4 @@ const AuthenticationView = () => {
   );
 };
 
-export default AuthenticationView;
+export default QRCodeView;

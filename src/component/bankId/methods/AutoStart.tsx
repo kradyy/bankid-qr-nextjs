@@ -1,26 +1,23 @@
 import Alert from "@/components/elements/Alert";
 import { useContext, useEffect, useState } from "react";
 import FadeLoader from "react-spinners/FadeLoader";
-import { BankIdContext } from "@/components/BankId/BankIdContext";
-import MethodFooter from "./MethodFooter";
+import { BankIdContext } from "@/components/bankId/BankIdContext";
+import MethodFooter from "../MethodFooter";
 
-const IdentificationView = () => {
+const AutoStartView = () => {
   const { state } = useContext(BankIdContext);
 
-  const { hasTimedOut, startToken } = state;
+  const { hasTimedOut, autoStartToken } = state;
 
   useEffect((): void => {
-    if (!startToken) {
+    if (!autoStartToken) {
       return;
     }
 
-    let currentUrl = new URL(window.location.href);
-    currentUrl.searchParams.append("challenge", "1234");
-
-    const url = `bankid:///?autostarttoken=${startToken}&redirect=${currentUrl}`;
+    const url = `bankid:///?autostarttoken=${autoStartToken}&redirect=null`;
 
     window.open(url, "_self");
-  }, [startToken]);
+  }, [autoStartToken]);
 
   return (
     <>
@@ -67,9 +64,9 @@ const IdentificationView = () => {
         </Alert>
       )}
 
-      <MethodFooter reTriggerView="identification" />
+      <MethodFooter reTriggerView="autostart" />
     </>
   );
 };
 
-export default IdentificationView;
+export default AutoStartView;

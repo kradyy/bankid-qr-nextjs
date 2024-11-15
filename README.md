@@ -24,7 +24,7 @@ Create an API route `pages/api/bankid.ts` to handle BankID authentication reques
 
 ### Step 2: Custom Hook
 
-Use the custom hook `useBankIdQrCode` in your component to initiate and manage BankID authentication processes. This hook manages the authentication flow, QR code generation, and polling for authentication status.
+Use the custom hook `useBankId` in your component to initiate and manage BankID authentication processes. This hook manages the authentication flow, QR code generation, and polling for authentication status.
 
 ### Step 3: Implementing the Frontend
 
@@ -36,12 +36,12 @@ Below is an example of how to use the custom hook in a Next.js component to disp
 
 ```jsx
 import React, { useEffect } from "react";
-import useBankIdQrCode from "hooks/useBankIdQrCode";
+import useBankId from "hooks/useBankId";
 import BeatLoader from "react-spinners/BeatLoader";
 
 const BankIDClient = () => {
   const { qrCodeImage, identification, hasTimedOut, retriggerAuth } =
-    useBankIdQrCode();
+    useBankId();
 
   useEffect(() => {
     retriggerAuth();
